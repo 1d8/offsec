@@ -1,0 +1,2 @@
+inotify==0.2.10
+psutil==6.1.0
