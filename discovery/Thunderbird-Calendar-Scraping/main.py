@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import re
 
 def fileExists():
     baseDir = os.path.expanduser("~/.thunderbird")
@@ -35,8 +36,18 @@ def parseDB(filePath):
             attachments = c.fetchall()
             
             
-            print(f"{eventTitle}\n{attendees}\n{location}\n{attachments}\n\n")
-            
+            rPattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+
+            if len(attendees) > 0:
+                print(f"Event title: {eventTitle}\nEvent location: {location}\nEvent attachments:{attachments}")
+                for i in attendees:
+                    #print(f"Event attendees: {i[0].split(';')}")
+                    emailAddr = re.findall(rPattern, i[0])
+                    #print(emailAddr)
+                    print(f"{i[0].split(';')[0]}: {emailAddr}")
+            else:
+                print(f"Event title: {eventTitle}\nEvent location: {location}\nEvent attachments: {attachments}")
+
         conn.close()
 
 

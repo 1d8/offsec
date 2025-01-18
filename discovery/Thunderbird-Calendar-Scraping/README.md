@@ -6,9 +6,11 @@ This script will scrape the contents of a Thunderbird calendar SQLITE database i
 
 `python3 main.py`
 
+![](https://i.ibb.co/m6cHPJR/2025-01-18-12-49.png)
+
 ## Todo
 
-- [ ] Implement prettier method for parsing event attendee list
+- [ x ] Implement prettier method for parsing event attendee list
 
 ## Reference
 
