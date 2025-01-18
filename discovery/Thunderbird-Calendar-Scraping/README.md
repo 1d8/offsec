@@ -10,7 +10,7 @@ This script will scrape the contents of a Thunderbird calendar SQLITE database i
 
 ## Todo
 
-- [ x ] Implement prettier method for parsing event attendee list
+- [x] Implement prettier method for parsing event attendee list
 
 ## Reference
 
