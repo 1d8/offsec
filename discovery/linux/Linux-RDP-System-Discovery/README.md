@@ -4,4 +4,4 @@ This script will parse the Remmina preferences file on Linux (`~/.config/remmina
 
 ## Todo
 
-[ ] Check each previously connected RDP host to see if RDP port is still open
+- [ ] Check each previously connected RDP host to see if RDP port is still open
