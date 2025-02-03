@@ -2,7 +2,7 @@
 
 The registry key `HKEY_CURRENT_USER\Software\Microsoft\Terminal Server Client\Servers` contains information such as the IP address & the username hint for past connected RDP systems.
 
-![](https://i.ibb.co/x8z0hCs4/2025-02-02-09-46.png)
+![](https://i.ibb.co/20T24Wvw/2025-02-02-17-17.png)
 
 ## Usage
 
