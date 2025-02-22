@@ -21,43 +21,46 @@ def checkCanWrite(shares: dict):
     print(f"[+] {sharedFolder} | writable: {writable}")
     return writable, sharedFolder
 
+
+def checkSharedFolder(sharedFolderObj, machineName):
+    if len(sharedFolderObj) != 0:
+        for item in sharedFolderObj:
+            tmpDict = {"VM Name": machineName, "Shared Folder Name": item.name, "Shared Folder Host Path": item.host_path, "Writable": item.writable}
+            return tmpDict
+
+
 """
 Currently will only enumerate shared folders
 
 Todo
-- [ ] Test if it'll enumerate multiple shared folders
+- [ x ] Test if it'll enumerate multiple shared folders
 - [ ] Add in functionality that'll add malware to the shared folder
 - [ ] Add in functionality that if there's no shared folder, it'll create one
 - [ ] Maybe auto-mount the shared folder if it's not already mounted?
-- [ ] Turn shared folder finder into a separate function
+- [ x ] Turn shared folder finder into a separate function
 - Docs/available functions: https://github.com/sethmlarson/virtualbox-python/blob/master/virtualbox/library.py
 """
 
 if __name__ == '__main__':
     machines = findVMs()
     vbox = virtualbox.VirtualBox()
-
+    sharedFolderList = []
+    
     for machine in machines:
         vm = vbox.find_machine(machine)
         session = vm.create_session()
 
         sharedFolders = session.machine.shared_folders
-        if len(sharedFolders) != 0:
-            tmpDict = {}
-            sharedFolderList = []
-            for item in sharedFolders:
-                tmpDict["VM Name"] = machine
-                tmpDict["Shared Folder Name"] = item.name
-                tmpDict["Shared Folder Host Path"] = item.host_path
-                tmpDict["Writable"] = item.writable
-            
-            sharedFolderList.append(tmpDict)
-
+        
+        out = checkSharedFolder(sharedFolders, machine)
+        if out != None:
+            sharedFolderList.append(out)
+        
 
         session.unlock_machine()
 
     
-    #print(f"[+] Discovered shared folders: {sharedFolderList}")
+    print(f"[+] Discovered shared folders: {len(sharedFolderList)}")
 
     # Loop through discovered shared folders & check if writable
     for entry in sharedFolderList:
